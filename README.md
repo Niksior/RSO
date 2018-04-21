@@ -1,1 +1,1 @@
-RSO
+https://neo.dmcs.pl/rso/
