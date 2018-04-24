@@ -17,6 +17,7 @@ void showMenu(Groups gr){
 			cout << gr[i]->Name() << endl;
 		}
 	}
+	cout << "Press 6 to logout" << endl;
 }
 
 int main(int argc, char* argv[])
@@ -54,10 +55,11 @@ int main(int argc, char* argv[])
 		Groups gr;
 		while(status == 0) {
 			showMenu(gr);
-			int choice = 0;
+			fflush(stdin);
+			char choice;
 			cin >> choice;
 			switch(choice) {
-				case 1: {
+				case '1': {
 					char message[255];
 					string name;
 					cout << "Type username you want to send message" << endl;
@@ -67,12 +69,10 @@ int main(int argc, char* argv[])
 						proxy = chatServer->getUserByName(name);
 					}	catch(NameDoesNotExist& e){
 						cout << "Name does not exist!";
-						status = 1;
 						break;
 					}
 					if(proxy == NULL){
 						cout << "Name does not exist!";
-						status = 1;
 						break;
 					}
 					cout << "Type message: ";
@@ -81,7 +81,7 @@ int main(int argc, char* argv[])
 					proxy->receivePrivateText(message, uPrx);
 					break;
 				}
-				case 2:{
+				case '2':{
 					string name;
 					cout << "Type chat you want to join to" << endl;
 					cin >> name;
@@ -90,7 +90,6 @@ int main(int argc, char* argv[])
 						proxy = chatServer->getGroupServerByName(name);
 					}catch(NameDoesNotExist& e){
 						cout << "Name does not exist!" << endl;
-						status = 1;
 						break;
 					}
 					cout << "Joined server" << endl;
@@ -104,7 +103,7 @@ int main(int argc, char* argv[])
 					gr.push_back(proxy);
 					break;
 				}
-				case 3:{
+				case '3':{
 					string name;
 					cout << "Type chat you want to create" << endl;
 					cin >> name;
@@ -113,14 +112,13 @@ int main(int argc, char* argv[])
 						proxy = groupManager->CreateGroup(name);
 					}catch (NameAlreadyExists& e){
 						cout << " Name already exist!" << endl;
-						status = 1;
 						break;
 					}
 					cout << "Created server" << endl;
 					chatServer->registerServer(groupManager);
 					break;
 				}
-				case 4:{
+				case '4':{
 					//leave group
 					if(gr.size() > 0) {
 						string name;
@@ -132,7 +130,6 @@ int main(int argc, char* argv[])
 									gr[i]->Leave(uPrx);
 								}catch(UserDoesNotExist& e) {
 									cout << "User does not exist" << endl;
-									status = 1;
 									break;
 								}
 								gr.erase(gr.begin() + i);
@@ -148,7 +145,7 @@ int main(int argc, char* argv[])
 					}
 				}
 
-				case 5:{
+				case '5':{
 					//send group
 					if(gr.size() > 0) {
 						string name;
@@ -164,7 +161,6 @@ int main(int argc, char* argv[])
 									gr[i]->SendMessage(message, uPrx, gr[i]);
 								}catch(UserDoesNotExist& e) {
 									cout << "User does not exist!" << endl;
-									status =1 ;
 									break;
 								}
 								break;
@@ -177,6 +173,10 @@ int main(int argc, char* argv[])
 					} else {
 						break;
 					}
+				}
+				case '6': {
+					status = 1;
+					break;
 				}
 				default: {
 					cout << "Wrong option!" << endl;
