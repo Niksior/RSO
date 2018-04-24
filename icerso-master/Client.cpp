@@ -13,7 +13,7 @@ void showMenu(Groups gr){
 		cout << "Press 4 to leave group" << endl;
 		cout << "Press 5 to send group message" << endl;
 		cout << "You are in groups:" << endl;
-		for(int i=0; i< gr.size(); i++){
+		for(int i = 0; i < gr.size(); i++){
 			cout << gr[i]->Name() << endl;
 		}
 	}
@@ -27,8 +27,7 @@ int main(int argc, char* argv[])
 	try {
 		ic = Ice::initialize(argc, argv);
 		ic2 = Ice::initialize(argc, argv);
-		Ice::ObjectAdapterPtr adapter
-					= ic->createObjectAdapterWithEndpoints("Adapter2", "default");
+		Ice::ObjectAdapterPtr adapter	= ic->createObjectAdapterWithEndpoints("Adapter2", "default");
 		string name;
 		cout << "Enter your name: ";
 		cin >> name;
@@ -44,147 +43,146 @@ int main(int argc, char* argv[])
 		GroupServerManagerPrx groupManager = GroupServerManagerPrx::checkedCast(groupManagerBase);
 		if(!groupManager)
 			throw "Invalid proxy group";
-		try{
+		try {
 			chatServer->LogIn(uPrx);
-		}catch(NameAlreadyExists& e){
+		}	catch(NameAlreadyExists& e){
 			cout << "Name already exist" << endl;
 			ic->destroy();
 			ic2->destroy();
 			return status = 1;
 		}
 		Groups gr;
-		while(status == 0){
+		while(status == 0) {
 			showMenu(gr);
-					int choice = 0;
-					cin >> choice;
-					switch(choice){
-					case 1: {
-						char message[255];
-						string name;
-						cout << "Type username you want to send message" << endl;
-						cin >> name;
-						UserPrx proxy = NULL;
-						try{
-							 proxy = chatServer->getUserByName(name);
-						}catch(NameDoesNotExist& e){
-							cout << "Name does not exist!";
-							status = 1;
-							break;
-						}
-						if(proxy == NULL){
-							cout << "Name does not exist!";
-							status = 1;
-							break;
-						}
-						cout << "Type message: ";
-						cin.ignore(1000, '\n');
-						cin.getline(message,255);
-						proxy->receivePrivateText(message, uPrx);
+			int choice = 0;
+			cin >> choice;
+			switch(choice) {
+				case 1: {
+					char message[255];
+					string name;
+					cout << "Type username you want to send message" << endl;
+					cin >> name;
+					UserPrx proxy = NULL;
+					try{
+						proxy = chatServer->getUserByName(name);
+					}	catch(NameDoesNotExist& e){
+						cout << "Name does not exist!";
+						status = 1;
 						break;
 					}
-					case 2:{
-						string name;
-						cout << "Type chat you want to join to" << endl;
-						cin >> name;
-						GroupServerPrx proxy = NULL;
-						try{
-							proxy = chatServer->getGroupServerByName(name);
-						}catch(NameDoesNotExist& e){
-							cout << "Name does not exist!" << endl;
-							status =1;
-							break;
-						}
-						cout << "Joined server" << endl;
-						try{
-							proxy->join(uPrx);
-						}catch(UserAlreadyRegistered& e){
-							cout << "User Already registered!" << endl;
-							status =1;
-							break;
-						}
-						gr.push_back(proxy);
+					if(proxy == NULL){
+						cout << "Name does not exist!";
+						status = 1;
 						break;
 					}
-					case 3:{
-						string name;
-						cout << "Type chat you want to create" << endl;
-						cin >> name;
-						GroupServerPrx proxy;
-						try{
-							proxy = groupManager->CreateGroup(name);
-						}catch(NameAlreadyExists& e){
-							cout << " Name already exist!" << endl;
-							status = 1;
-							break;
-						}
-						cout << "Created server" << endl;
-						chatServer->registerServer(groupManager);
+					cout << "Type message: ";
+					cin.ignore(1000, '\n');
+					cin.getline(message,255);
+					proxy->receivePrivateText(message, uPrx);
+					break;
+				}
+				case 2:{
+					string name;
+					cout << "Type chat you want to join to" << endl;
+					cin >> name;
+					GroupServerPrx proxy = NULL;
+					try{
+						proxy = chatServer->getGroupServerByName(name);
+					}catch(NameDoesNotExist& e){
+						cout << "Name does not exist!" << endl;
+						status = 1;
 						break;
 					}
-					case 4:{
-						//leave group
-						if(gr.size() > 0){
-							string name;
-							cout << "Type name of group you want to leave" << endl;
-							cin >> name;
-							for(int i =0; i < gr.size(); i++){
-								if(gr[i]->Name().compare(name) == 0){
-									try{
-										gr[i]->Leave(uPrx);
-									}catch(UserDoesNotExist& e){
-										cout << "User does not exist" << endl;
-										status = 1;
-										break;
-									}
-									gr.erase(gr.begin() + i);
-									break;
-								}else{
-									cout << "You are not in group " + name << endl;
+					cout << "Joined server" << endl;
+					try{
+						proxy->join(uPrx);
+					}catch(UserAlreadyRegistered& e){
+						cout << "User Already registered!" << endl;
+						status =1;
+						break;
+					}
+					gr.push_back(proxy);
+					break;
+				}
+				case 3:{
+					string name;
+					cout << "Type chat you want to create" << endl;
+					cin >> name;
+					GroupServerPrx proxy;
+					try{
+						proxy = groupManager->CreateGroup(name);
+					}catch (NameAlreadyExists& e){
+						cout << " Name already exist!" << endl;
+						status = 1;
+						break;
+					}
+					cout << "Created server" << endl;
+					chatServer->registerServer(groupManager);
+					break;
+				}
+				case 4:{
+					//leave group
+					if(gr.size() > 0) {
+						string name;
+						cout << "Type name of group you want to leave" << endl;
+						cin >> name;
+						for(int i =0; i < gr.size(); i++) {
+							if(gr[i]->Name().compare(name) == 0) {
+								try {
+									gr[i]->Leave(uPrx);
+								}catch(UserDoesNotExist& e) {
+									cout << "User does not exist" << endl;
+									status = 1;
 									break;
 								}
+								gr.erase(gr.begin() + i);
+								break;
+							} else {
+								cout << "You are not in group " + name << endl;
+								break;
 							}
-							break;
-						}else{
-
-						break;
 						}
+						break;
+					} else {
+						break;
 					}
+				}
 
-					case 5:{
-						//send group
-						if(gr.size() > 0){
-							string name;
-							cout << "Type group name you want to send message" << endl;
-							cin >> name;
-							for(int i =0; i < gr.size(); i++){
-								if(gr[i]->Name().compare(name) == 0){
-									char message[256];
-									cout << "Type message: ";
-									cin.ignore(1000, '\n');
-									cin.getline(message,255);
-									try{
-										gr[i]->SendMessage(message, uPrx, gr[i]);
-									}catch(UserDoesNotExist& e){
-										cout << "User does not exist!" << endl;
-										status =1 ;
-										break;
-									}
-									break;
-								}else{
-									cout << "You are not in group " + name << endl;
+				case 5:{
+					//send group
+					if(gr.size() > 0) {
+						string name;
+						cout << "Type group name you want to send message" << endl;
+						cin >> name;
+						for(int i =0; i < gr.size(); i++) {
+							if(gr[i]->Name().compare(name) == 0) {
+								char message[256];
+								cout << "Type message: ";
+								cin.ignore(1000, '\n');
+								cin.getline(message,255);
+								try{
+									gr[i]->SendMessage(message, uPrx, gr[i]);
+								}catch(UserDoesNotExist& e) {
+									cout << "User does not exist!" << endl;
+									status =1 ;
 									break;
 								}
+								break;
+							} else {
+								cout << "You are not in group " + name << endl;
+								break;
 							}
-							break;
-						}else{
-							break;
 						}
-					}
-					default: {
-						cout << "Wrong option!" << endl;
+						break;
+					} else {
 						break;
 					}
-					}
+				}
+				default: {
+					cout << "Wrong option!" << endl;
+					break;
+				}
+			}
 		}
 		for(int i =0; i < gr.size(); i++){
 			gr[i]->Leave(uPrx);
