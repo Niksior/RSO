@@ -5,6 +5,8 @@ using namespace std;
 using namespace Chat;
 
 void showMenu(Groups gr){
+	cout << endl << endl << "Press 6 to logout" << endl;
+	cout << "----------------------" << endl;
 	cout << "Press 1 to send private message" << endl;
 	cout << "Press 2 to join group server" << endl;
 	cout << "Press 3 to create group server" << endl;
@@ -12,22 +14,22 @@ void showMenu(Groups gr){
 	if(gr.size() != 0){
 		cout << "Press 4 to leave group" << endl;
 		cout << "Press 5 to send group message" << endl;
+		cout << "----------------------" << endl;
 		cout << "You are in groups:" << endl;
 		for(int i = 0; i < gr.size(); i++){
 			cout << gr[i]->Name() << endl;
 		}
+		cout << "----------------------" << endl;
 	}
-	cout << "Press 6 to logout" << endl;
+
 }
 
 int main(int argc, char* argv[])
 {
 	int status = 0;
-	Ice::CommunicatorPtr ic2;
 	Ice::CommunicatorPtr ic;
 	try {
 		ic = Ice::initialize(argc, argv);
-		ic2 = Ice::initialize(argc, argv);
 		Ice::ObjectAdapterPtr adapter	= ic->createObjectAdapterWithEndpoints("Adapter2", "default");
 		string name;
 		cout << "Enter your name: ";
@@ -49,7 +51,6 @@ int main(int argc, char* argv[])
 		}	catch(NameAlreadyExists& e){
 			cout << "Name already exist" << endl;
 			ic->destroy();
-			ic2->destroy();
 			return status = 1;
 		}
 		Groups gr;
@@ -198,7 +199,5 @@ int main(int argc, char* argv[])
 
 	if (ic)
 		ic->destroy();
-	if(ic2)
-		ic2->destroy();
 	return status;
 }
