@@ -14,7 +14,6 @@ int main(int argc, char* argv[])
 			= ic->createObjectAdapterWithEndpoints("Adapter", "default -p 10000");
 		Ice::ObjectPtr objectChat = new ChatServerI;
 		Ice::ObjectPtr objectManager = new GroupServerManagerI;
-		//Ice::ObjectPtr objectManager = new
 
 		adapter->add(objectChat, ic->stringToIdentity("ChatServer"));
 		adapter->add(objectManager, ic->stringToIdentity("Manager"));

@@ -120,7 +120,6 @@ int main(int argc, char* argv[])
 					break;
 				}
 				case '4':{
-					//leave group
 					if(gr.size() > 0) {
 						string name;
 						cout << "Type name of group you want to leave" << endl;
@@ -147,7 +146,6 @@ int main(int argc, char* argv[])
 				}
 
 				case '5':{
-					//send group
 					if(gr.size() > 0) {
 						string name;
 						cout << "Type group name you want to send message" << endl;

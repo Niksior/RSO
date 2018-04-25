@@ -41,7 +41,6 @@ Chat::ChatServerI::getUserByName(const ::std::string& name,
     		return limboUserList[i];
     	}
     }
-    //throw Chat::NameDoesNotExist();
     return NULL;
 }
 
@@ -94,9 +93,6 @@ Chat::ChatServerI::unregisterServer(const ::Chat::GroupServerManagerPrx& serverM
 Chat::ChatServerI::getUser(const ::std::string& name,
                                const Ice::Current& current)
 {
-//	std::cout << "User: " << name << " created!" << std::endl;
-//	UserPtr servant = new UserI(name);
-//	return UserPrx::uncheckedCast(current.adapter->addWithUUID(servant));
 	return NULL;
 }
 
@@ -239,7 +235,6 @@ Chat::UserI::receiveText(const ::std::string& msg,
                          const ::std::string& serverName,
                          const Ice::Current& current)
 {
-	//this->myMessage = (sender->getName() + "@" + gServer->Name() + " : " + msg );
 	std::cout << sender->getName() + "@" + serverName + " : " + msg << std::endl;
 }
 
@@ -249,8 +244,5 @@ Chat::UserI::receivePrivateText(const ::std::string& msg,
                                 const ::Chat::UserPrx& sender,
                                 const Ice::Current& current)
 {
-	//this->myMessage = ("priv from " + sender->getName() + " : " + msg );
 	std::cout << "priv from " + sender->getName() + " : " + msg << std::endl;
 }
-
-
